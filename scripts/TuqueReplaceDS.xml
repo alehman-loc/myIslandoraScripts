@@ -1,0 +1,110 @@
+/*
+* Replace an existing Datastream
+* count/update object lable for MODS
+* Remove all double quotes from 
+* replacement string.
+*/
+
+$count = 1366;
+$dsid = 'MODS';
+$titlePredicate = "2009SP_AwakenShift";
+// Comma separated array of pids w/ds to be replaced.
+$arrPIDS = array(95357, 95742); 
+
+// Load user, connection, API with an object 
+$user = user_load(1);
+$connection = islandora_get_tuque_connection($user);
+$repository = $connection->repository;
+$api_a = $repository->api->a;
+
+// Iterate through objects
+foreach ($arrPIDS as&$pid) {
+  $preObject = 'wyu:' . $pid;
+  $object = islandora_object_load($preObject);
+  if (!$object) {
+    echo "Object Not Loaded";
+    return;
+  }	//TitleCount and String are for MODS ds
+		$titleCount = str_pad($count, 4, '0', STR_PAD_LEFT);
+		$titleString = "$titlePredicate_$titleCount";
+		$newString = "<mods xmlns='http://www.loc.gov/mods/v3' xmlns:mods='http://www.loc.gov/mods/v3' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+  <titleInfo>
+    <title>$titleString</title>
+    <subTitle></subTitle>
+  </titleInfo>
+  <name type='personal'>
+    <namePart>Jackson, Lawrence</namePart>
+    <role>
+      <roleTerm authority='marcrelator' type='text'>Director</roleTerm>
+    </role>
+  </name>
+  <name type='personal'>
+    <namePart>Knight, Marsha</namePart>
+    <role>
+      <roleTerm authority='marcrelator' type='text'>Director</roleTerm>
+    </role>
+  </name>
+  <name type='personal'>
+    <namePart>Brosseau, Vincent</namePart>
+    <role>
+      <roleTerm authority='marcrelator' type='text'>Director</roleTerm>
+    </role>
+  </name>
+  <name type='personal'>
+    <namePart>Wilson, Margaret</namePart>
+    <role>
+      <roleTerm authority='marcrelator' type='text'>Director</roleTerm>
+    </role>
+  </name>
+  <name type='personal'>
+    <namePart>Turpen, Scott</namePart>
+    <role>
+      <roleTerm authority='marcrelator' type='text'>Director</roleTerm>
+    </role>
+  </name>
+  <name type='personal'>
+    <namePart>Sheridan-Rabideau, Mark</namePart>
+    <role>
+      <roleTerm authority='marcrelator' type='text'>Director</roleTerm>
+    </role>
+  </name>
+  <typeOfResource>still image</typeOfResource>
+  <genre authority='marcgt'>picture</genre>
+  <originInfo>
+    <dateCreated keyDate='yes'>2009</dateCreated>
+    <publisher>University of Wyoming Department of Theater and Dance</publisher>
+    <place>
+      <placeTerm type='text'>Laramie, WY</placeTerm>
+    </place>
+  </originInfo>
+  <physicalDescription>
+    <form authority='marcform'>nonprojected graphic</form>
+    <digitalOrigin>reformatted digital</digitalOrigin>
+  </physicalDescription>
+  <subject>
+    <topic>Performing Arts</topic>
+  </subject>
+  <accessCondition type='useAndReproduction'>The University of Wyoming provides access to these public domain materials for educational and research/scholarly purposes. If you wish to publish or reproduce materials from these collections, please attribute each item to Department of Theater and Dance, University of Wyoming. Laramie, WY.</accessCondition>
+  <location>
+    <url usage='primary display'>http://hdl.handle.net/10176/$preObject</url>
+  </location>
+</mods>";
+  $repository = $object->repository;
+//Get $dsid Datastream
+  $datastream  = islandora_datastream_load($dsid, $object);
+  if (!$datastream) {
+    echo "Datastream Not Loaded";
+    return;
+  } //Edit Content
+    $loadDS = $datastream->getContent('');
+    $loadDS_doc = DOMDocument::loadXML($loadDS);
+    $loadDS_string = $loadDS_doc->saveXML();
+		/* Check Strings
+		* print_r ($loadDS_string);
+		* print_r ($newString);
+		*/
+    $datastream->setContentFromString($newString);
+		$object->label = $titleString;
+    echo "New MODS ingested for $pid via Tuque. \n";
+    $count++;
+}

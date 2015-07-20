@@ -1,0 +1,54 @@
+/*
+* Replace an existing RELS-EXT ds
+* 
+* Remove all double quotes from 
+* replacement string.
+*/
+
+$count = 130;
+$month = 1;
+$dsid = 'RELS-EXT';
+// Comma separated array of pids w/ds to be replaced.
+$arrPIDS = array(131057, 130858, 130422); 
+
+// Load user, connection, API with an object 
+$user = user_load(1);
+$connection = islandora_get_tuque_connection($user);
+$repository = $connection->repository;
+$api_a = $repository->api->a;
+
+// Iterate through objects
+foreach ($arrPIDS as&$pid) {
+	$monthCount = str_pad($month, 2, '0', STR_PAD_LEFT);
+  $preObject = 'wyu:' . $pid;
+  $object = islandora_object_load($preObject);
+  if (!$object) {
+    echo "Object Not Loaded";
+    return;
+  }	
+		$newString = "<rdf:RDF xmlns:fedora='info:fedora/fedora-system:def/relations-external#' xmlns:fedora-model='info:fedora/fedora-system:def/model#' xmlns:islandora='http://islandora.ca/ontology/relsext#' xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+  <rdf:Description rdf:about='info:fedora/wyu:$pid'>
+    <fedora:isMemberOf rdf:resource='info:fedora/wyu:12541'></fedora:isMemberOf>
+    <fedora-model:hasModel rdf:resource='info:fedora/islandora:newspaperIssueCModel'></fedora-model:hasModel>
+    <islandora:create_pdf>true</islandora:create_pdf>
+    <islandora:isSequenceNumber>$count</islandora:isSequenceNumber>
+    <islandora:dateIssued>1929-$monthCount-01</islandora:dateIssued>
+  </rdf:Description>
+</rdf:RDF>";
+  $repository = $object->repository;
+//Get $dsid Datastream
+  $datastream  = islandora_datastream_load($dsid, $object);
+  if (!$datastream) {
+    echo "Datastream Not Loaded";
+    return;
+  } //Edit Content
+    $loadDS = $datastream->getContent('');
+    $loadDS_doc = DOMDocument::loadXML($loadDS);
+    $loadDS_string = $loadDS_doc->saveXML();
+		/* Check Strings print_r ($newString);
+		print_r ($loadDS_string);*/
+    $datastream->setContentFromString($newString);
+    echo "New $dsid ingested for $pid via Tuque. \n";
+    $count++;
+		$month++;
+}
