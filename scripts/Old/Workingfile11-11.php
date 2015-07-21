@@ -20,6 +20,9 @@ Experiments:
 	$output = shell_exec($command);
 	echo $output;
 ************************************
+string $argument = "wyu%3A112666";
+
+echo rawurldecode ( $argument );
 
 ************************************
 Worked: 
