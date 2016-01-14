@@ -1,0 +1,52 @@
+/*
+* Replace an existing Datastream
+* count/update object lable for MODS
+* Remove all double quotes from 
+* replacement string.
+*/
+
+
+$dsid = 'RELS-EXT';
+// Comma separated array of pids w/ds to be replaced.
+$arrPIDS = array(149845, 149846, 149847, 149848, 149849, 149850, 149851, 149837, 149838, 149839, 149840, 149841, 149842, 149843, 149844); 
+
+// Load user, connection, API with an object 
+$user = user_load(1);
+$connection = islandora_get_tuque_connection($user);
+$repository = $connection->repository;
+$api_a = $repository->api->a;
+
+// Iterate through objects
+foreach ($arrPIDS as&$pid) {
+  $preObject = 'wyu:' . $pid;
+  $object = islandora_object_load($preObject);
+  if (!$object) {
+    echo "Object Not Loaded";
+    return;
+  }	//TitleCount and String are for MODS ds
+		$newString = "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:fedora='info:fedora/fedora-system:def/relations-external#' xmlns:fedora-model='info:fedora/fedora-system:def/model#' xmlns:islandora='http://islandora.ca/ontology/relsext#'>
+  <rdf:Description rdf:about='info:fedora/$preObject'>
+    <fedora:isMemberOfCollection rdf:resource='info:fedora/wyu:351'></fedora:isMemberOfCollection>
+    <fedora-model:hasModel rdf:resource='info:fedora/islandora:compoundCModel'></fedora-model:hasModel>
+    <islandora:inheritXacmlFrom rdf:resource='info:fedora/wyu:351'></islandora:inheritXacmlFrom>
+  </rdf:Description>
+</rdf:RDF>";
+  $repository = $object->repository;
+//Get $dsid Datastream
+  $datastream  = islandora_datastream_load($dsid, $object);
+  if (!$datastream) {
+    echo "Datastream Not Loaded";
+    return;
+  } //Edit Content
+    $loadDS = $datastream->getContent('');
+    $loadDS_doc = DOMDocument::loadXML($loadDS);
+    $loadDS_string = $loadDS_doc->saveXML();
+		/* Check Strings
+		* print_r ($loadDS_string);
+		* print_r ($newString);
+		*/
+    $datastream->setContentFromString($newString);
+		$object->label = $titleString;
+    echo "New MODS ingested for $pid via Tuque. \n";
+    $count++;
+}

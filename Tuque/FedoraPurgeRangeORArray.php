@@ -19,7 +19,7 @@ $endPID = '116285';
 //Iterate through Objects to purge them.
 for($pid=$startPID; $pid<=$endPID; $pid++) {
         $object = 'islandora:' . $pid;
-				$api_m->purgeObject($object);
+		$api_m->purgeObject($object);
         echo "purged $object \n";
     }
   echo "Purged objects $startPID through $endPID.";
