@@ -1,9 +1,9 @@
 /*
  * Purge a range of objects from Fedora. 
  *
- * update startPID and endPID, paste into 
- * devel Execute PHP block in dashboard.
- * TODO - Error handling!! and series of ranges.
+ * update startPID and endPID, or array, 
+ * use devel Execute PHP block.
+ * TODO - Error handling!! 
  */
  
 //Load Repo and API
