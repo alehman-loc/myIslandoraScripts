@@ -3,30 +3,9 @@
  * Enter comma separated arrays of 
  * pids and DS.
  */
- 
- 
-/*  Not sure what's wrong: 
- 
-$user = user_load(1);
-$connection = islandora_get_tuque_connection($user);
-$repository = $connection->repository;
-$api_m = $repository->api->m;
-
-$arrPIDS = array(70188, 70189); 
-
-foreach ($arrPIDS as&$pid) {
-      $object = 'wyu:' . $pid;
-      $api_m->purgeDatastream($object, 'POLICY');
-      echo "purged POLICY from http://uwdigital.uwyo.edu/islandora/object/$object \n";
-}
-
- worked */
- 
- 
- 
 
 $arrPIDS = array(91734, 91898); 
-$dsid_arr = array('POLICY');
+$dsid_arr = array('OBJ', 'TN', 'JPG', 'JP2');
  
 //Load Repo and API
 $user = user_load(1);

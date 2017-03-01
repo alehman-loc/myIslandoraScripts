@@ -8,7 +8,7 @@
 
 $dsid = 'RELS-EXT';
 // Comma separated array of pids w/ds to be replaced.
-$arrPIDS = array(149845, 149846, 149847, 149848, 149849, 149850, 149851, 149837, 149838, 149839, 149840, 149841, 149842, 149843, 149844); 
+$arrPIDS = array(168362, 168260, 168329, 168199, 168162, 168084); 
 
 // Load user, connection, API with an object 
 $user = user_load(1);

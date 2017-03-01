@@ -12,15 +12,21 @@ $connection = islandora_get_tuque_connection($user);
 $repository = $connection->repository;
 $api_m = $repository->api->m;
 
+<<<<<<< HEAD
 //_BREAK__ Sequence Variables to replace.
 $startPID = '116265';
 $endPID = '116285';
+>>>>>>> 
 
 /* Iterate through Objects to purge them.
  * Correct the namespace!!
  */
 for($pid=$startPID; $pid<=$endPID; $pid++) {
         $object = 'islandora:' . $pid;
+        if (!$object) {
+            echo "Object Not Loaded";
+            return;
+        }
 	$api_m->purgeObject($object);
         echo "purged $object \n";
     }
@@ -33,5 +39,4 @@ foreach ($arrPIDS as&$pid) {
         $returnTimestamp = 
 		$api_m->purgeObject($object);
         echo "purged $object \n";
-    }
-  
+    } 

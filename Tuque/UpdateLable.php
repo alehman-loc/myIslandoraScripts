@@ -13,10 +13,10 @@ $repository = $connection->repository;
 $api_a = $repository->api->a;
 
 // OR Comma separated array of pids w/ds.
-$arrPIDS = array(97845, 97843, 98526, 98429); 
+$arrPIDS = array(870, 871, 872); 
 foreach ($arrPIDS as&$pid) {
 
-  $preObject = 'wyu:' . $pid;
+  $preObject = 'islandora:' . $pid;
   $object = islandora_object_load($preObject);
   if (!$object) {
     echo "Object Not Loaded";
@@ -43,7 +43,9 @@ foreach ($arrPIDS as&$pid) {
     } else {
       $node = $modsDS_doc->getElementsByTagName('titleInfo')->item(0);
       $kid = $node->getElementsByTagName('title')->item(0);
-
+		
+		$count = 0;
+		
 	    $title = $kid.textContent;
 	    //echo $object, " Title: ", $title, "\n";
 	    $object->label = $title;
