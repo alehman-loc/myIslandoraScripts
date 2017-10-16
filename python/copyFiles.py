@@ -1,5 +1,5 @@
 # This should count the number of tiffs
-# Then Copy a prepared -0001.xml file
+# Then Copy a prepared 000.xml file
 
 import os, fnmatch, shutil, itertools
 
@@ -11,12 +11,12 @@ for dir in dirs:
     currentDir = os.getcwd()
     files = fnmatch.filter(os.listdir( currentDir ), "*.tif")
     fileCount = len(files)
-    counter = 2
+    counter = 1
     for _ in range(fileCount-1):
         currentDirString= dir
         filePath = os.path.abspath(currentDir)
-        metaFile = filePath + "\\" + dir + "-0001.xml"
-        newName = filePath + "\\" + dir + "-" + str(counter).zfill(4) + ".xml"
+        metaFile = filePath + "\\" + dir + "000.xml"
+        newName = filePath + "\\" + dir + str(counter).zfill(3) + ".xml"
         shutil.copy (metaFile, newName)
         counter += 1
     #print Confirmation!!
